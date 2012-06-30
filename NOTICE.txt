@@ -1,0 +1,13 @@
+   ==========================================================================
+   == NOTICE file corresponding to section 4 d of the Apache License,      ==
+   == Version 2.0, in this case for the TestLink-Synchronize distribution. ==
+   ==========================================================================
+
+   TestLink-Synchronize is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+   You should have received a copy of the Apache License Version 2.0
+   along with TestLink-Synchronize.
+
+   If not, see <http://www.apache.org/licenses/LICENSE-2.0>.
