@@ -1,7 +1,7 @@
 /*
  * File: ShowTestlinkMojo.java
  *
- * Copyright (c) 2006-2012 the original author or authors.
+ * Copyright (c) 2012 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * last modified: Monday, February 20, 2012 (11:32) by: Matthias Beil
+ * last modified: Saturday, June 30, 2012 (21:32) by: Matthias Beil
  */
 package de.eimb.testlink.synchronize.citrus.mvn.plugin;
 
@@ -26,7 +26,7 @@ import java.util.List;
  * development key must be provided.
  *
  * @author Matthias Beil
- * @since Thursday, December 29, 2011
+ * @since TestLink-Synchronize 1.0.0
  * @goal show
  */
 public class ShowTestlinkMojo extends AbstractTestLinkMojo {
