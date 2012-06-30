@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spring:beans xmlns="http://www.citrusframework.org/schema/testcase" 
+              xmlns:ws="http://www.citrusframework.org/schema/ws/testcase"
+              xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+                  http://www.citrusframework.org/schema/ws/testcase http://www.citrusframework.org/schema/ws/testcase/citrus-ws-testcase.xsd 
+                  http://www.citrusframework.org/schema/testcase http://www.citrusframework.org/schema/testcase/citrus-testcase.xsd">
+    
+    <testcase name="CTL1V2">
+        <meta-info>
+            <author>Matthias Beil</author>
+            <creationdate>2012-06-30</creationdate>
+            <status>DRAFT</status>
+            <last-updated-by>Matthias Beil</last-updated-by>
+            <last-updated-on>2012-06-30T20:43:55</last-updated-on>
+        </meta-info>
+        
+        <description>&lt;p&gt;Um sicher zu stellen das die Anbindung an TestLink funktioniert, m&amp;uuml;ssen die Daten gelesen werden. Hierzu soll das Programm TestLinkInfo verwendet werden. Dieses wird mit der URL&amp;nbsp;und dem development key gestartet.&lt;/p&gt;</description>
+
+        <variables>
+            <variable name="testlink.notes.failure" value="failure-to-be-defined" />
+            <variable name="testlink.write" value="true" />
+            <variable name="testlink.notes.success" value="success-to-be-defined" />
+            <variable name="testlink.testcase.id" value="4" />
+            <variable name="testlink.testcase.platform" value="EIMB Development" />
+            <variable name="testlink.build.id" value="1" />
+            <variable name="testlink.testplan.id" value="7" />
+        </variables>
+        
+        <actions>
+            <echo>
+                <message>TODO: Code the test CTL1V2</message>
+            </echo>
+        </actions>
+    </testcase>
+</spring:beans>

@@ -1,0 +1,118 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>de.eimb.testlink.citrus</groupId>
+		<artifactId>testlink-synchronize-citrus</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>testlink-citrus-sample</artifactId>
+
+	<packaging>jar</packaging>
+
+	<name>testlink-citrus-sample</name>
+
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<citrus.version>1.2.M2</citrus.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>br.eti.kinoshita</groupId>
+			<artifactId>testlink-java-api</artifactId>
+			<version>1.9.3-1</version>
+		</dependency>
+
+		<!-- Citrus -->
+		<dependency>
+			<groupId>com.consol.citrus</groupId>
+			<artifactId>citrus-core</artifactId>
+			<version>${citrus.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>de.eimb.testlink.citrus</groupId>
+			<artifactId>testlink-citrus</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<testSourceDirectory>src/citrus/java</testSourceDirectory>
+		<testResources>
+			<testResource>
+				<directory>src/citrus/resources</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+				<filtering>true</filtering>
+			</testResource>
+			<testResource>
+				<directory>src/citrus/tests</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</testResource>
+		</testResources>
+
+		<plugins>
+
+			<plugin>
+				<groupId>de.eimb.testlink.citrus</groupId>
+				<artifactId>testlink-citrus-maven-plugin</artifactId>
+				<version>${project.version}</version>
+				<configuration>
+					<url>http://localhost/testlink</url>
+					<devKey>92276a295519160993cd7e3d64d8494b</devKey>
+					<directory>/work/temp/citrus</directory>
+					<!-- <url>http://service.ttwos.ascom-ac.de/testlink</url> <devKey>899d6e7eddb43026014b7273878d202f</devKey> -->
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<suiteXmlFiles>
+						<suiteXmlFile>testng.xml</suiteXmlFile>
+					</suiteXmlFiles>
+					<configuration>
+						<skip>true</skip>
+					</configuration>
+					<executions>
+						<execution>
+							<id>citrus-integration-tests</id>
+							<phase>integration-test</phase>
+							<goals>
+								<goal>test</goal>
+							</goals>
+							<configuration>
+								<skip>false</skip>
+							</configuration>
+						</execution>
+					</executions>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>
