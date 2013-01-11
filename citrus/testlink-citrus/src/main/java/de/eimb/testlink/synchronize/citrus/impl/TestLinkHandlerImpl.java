@@ -1,7 +1,7 @@
 /*
  * File: TestLinkHandlerImpl.java
  *
- * Copyright (c) 2012 the original author or authors.
+ * Copyright (c) 2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,41 +15,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * last modified: Friday, June 29, 2012 (22:55) by: Matthias Beil
+ * last modified: Friday, January 11, 2013 (22:03) by: Matthias Beil
+ */
+/*
+ * File: TestLinkHandlerImpl.java
+ *
+ * Copyright (c) 2013 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * last modified: Friday, January 11, 2013 (22:03) by: Matthias Beil
  */
 package de.eimb.testlink.synchronize.citrus.impl;
 
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
-
 import org.apache.xmlrpc.XmlRpcException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import br.eti.kinoshita.testlinkjavaapi.TestLinkAPI;
+import br.eti.kinoshita.testlinkjavaapi.constants.ExecutionStatus;
+import br.eti.kinoshita.testlinkjavaapi.constants.TestLinkMethods;
+import br.eti.kinoshita.testlinkjavaapi.constants.TestLinkParams;
+import br.eti.kinoshita.testlinkjavaapi.model.Build;
+import br.eti.kinoshita.testlinkjavaapi.model.Platform;
+import br.eti.kinoshita.testlinkjavaapi.model.ReportTCResultResponse;
+import br.eti.kinoshita.testlinkjavaapi.model.TestCase;
+import br.eti.kinoshita.testlinkjavaapi.model.TestPlan;
+import br.eti.kinoshita.testlinkjavaapi.model.TestProject;
+import br.eti.kinoshita.testlinkjavaapi.util.TestLinkAPIException;
+import br.eti.kinoshita.testlinkjavaapi.util.Util;
 import de.eimb.testlink.synchronize.citrus.CitrusTestLinkBean;
 import de.eimb.testlink.synchronize.citrus.TestLinkCitrusBean;
 import de.eimb.testlink.synchronize.citrus.TestLinkCitrusHandler;
 import de.eimb.testlink.synchronize.citrus.TestLinkHandler;
-
-import br.eti.kinoshita.testlinkjavaapi.TestLinkAPI;
-import br.eti.kinoshita.testlinkjavaapi.TestLinkAPIException;
-import br.eti.kinoshita.testlinkjavaapi.model.Build;
-import br.eti.kinoshita.testlinkjavaapi.model.ExecutionStatus;
-import br.eti.kinoshita.testlinkjavaapi.model.Platform;
-import br.eti.kinoshita.testlinkjavaapi.model.ReportTCResultResponse;
-import br.eti.kinoshita.testlinkjavaapi.model.TestCase;
-import br.eti.kinoshita.testlinkjavaapi.model.TestLinkMethods;
-import br.eti.kinoshita.testlinkjavaapi.model.TestLinkParams;
-import br.eti.kinoshita.testlinkjavaapi.model.TestPlan;
-import br.eti.kinoshita.testlinkjavaapi.model.TestProject;
-import br.eti.kinoshita.testlinkjavaapi.util.Util;
 
 /**
  * Implementation of interaction with TestLink.
@@ -82,6 +97,7 @@ public final class TestLinkHandlerImpl implements TestLinkCitrusHandler, TestLin
     /**
      * {@inheritDoc}
      */
+    @Override
     public void writeToTestLink(final CitrusTestLinkBean bean) {
 
         try {
@@ -116,6 +132,9 @@ public final class TestLinkHandlerImpl implements TestLinkCitrusHandler, TestLin
             // set response
             bean.setResponseState(Boolean.TRUE);
             bean.addResponse(response.getMessage());
+        } catch (final TestLinkAPIException tex) {
+
+            LOGGER.error(tex.getMessage());
         } catch (final Exception ex) {
 
             // set response to failure
@@ -128,6 +147,7 @@ public final class TestLinkHandlerImpl implements TestLinkCitrusHandler, TestLin
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<TestLinkCitrusBean> readTestCases(final String url, final String key) {
 
         // make sure the returned list is never null
@@ -152,14 +172,18 @@ public final class TestLinkHandlerImpl implements TestLinkCitrusHandler, TestLin
                     if (project.isActive().booleanValue()) {
 
                         // get build for project and get test case(s)
+                        LOGGER.debug("Working on project [ {} ]", project.getName());
                         this.handleBuild(beanList, project, api, url);
                     } else {
 
                         // inform user that this is not an active project
-                        LOGGER.info("Skipping project [ {} ] as it is not active!", project.getName());
+                        LOGGER.warn("Skipping project [ {} ] as it is not active!", project.getName());
                     }
                 }
             }
+        } catch (final TestLinkAPIException tex) {
+
+            LOGGER.error(tex.getMessage());
         } catch (final Exception ex) {
 
             LOGGER.error("Error while reading test case(s) from TestLink!", ex);
@@ -193,24 +217,25 @@ public final class TestLinkHandlerImpl implements TestLinkCitrusHandler, TestLin
             // iterate over all test plan(s)
             for (final TestPlan plan : plans) {
 
+                LOGGER.debug("TestPlan [ {} ]", plan);
+
                 // make sure the test plan is active
                 if (plan.isActive().booleanValue()) {
 
                     // get the latest build for this test plan,
                     // as only one single build should be assign for a test plan
-                    final Build build = api.getLatestBuildForTestPlan(plan.getId());
+                    final Build build = this.readBuild(api, plan);
 
                     // make sure there is a build and a corresponding test plan ID
                     if ((null != build) && (null != build.getTestPlanId())) {
 
+                        LOGGER.debug("Build [ {} ]", build);
+
                         if (!plan.getId().equals(build.getTestPlanId())) {
 
                             // do not know what to do when this happens log it to see if it happens
-                            if (LOGGER.isDebugEnabled()) {
-                                LOGGER.debug(
-                                        "Test plan ID is [ {} ] but build test plan ID is [ {} ]?",
-                                        plan.getId(), build.getTestPlanId());
-                            }
+                            LOGGER.warn("Test plan ID is [ {} ] but build test plan ID is [ {} ]?",
+                                    plan.getId(), build.getTestPlanId());
                         }
 
                         // handle all test case(s)
@@ -357,6 +382,9 @@ public final class TestLinkHandlerImpl implements TestLinkCitrusHandler, TestLin
 
                 return projects;
             }
+        } catch (final TestLinkAPIException tex) {
+
+            LOGGER.error(tex.getMessage());
         } catch (final Exception ex) {
 
             LOGGER.error("Exception caught while reading project(s)!", ex);
@@ -391,10 +419,42 @@ public final class TestLinkHandlerImpl implements TestLinkCitrusHandler, TestLin
                 // there are some test plan(s), return them
                 return plans;
             }
+        } catch (final TestLinkAPIException tex) {
+
+            LOGGER.error(tex.getMessage());
         } catch (final Exception ex) {
 
             LOGGER.error("Exception caught while reading test plan(s) for test project ID [ {} ]!",
                     projectId, ex);
+        }
+
+        // there was some error, return null
+        return null;
+    }
+
+    /**
+     * Read build. Avoid throwing of exception.
+     *
+     * @param api
+     *            Connection object for TestLink.
+     * @param plan
+     *            Test plan.
+     *
+     * @return Build found or in case of an error return {@code null}.
+     */
+    private Build readBuild(final TestLinkAPI api, final TestPlan plan) {
+
+        try {
+
+            // get the latest build for this test plan,
+            // as only one single build should be assign for a test plan
+            return api.getLatestBuildForTestPlan(plan.getId());
+        } catch (final TestLinkAPIException tex) {
+
+            LOGGER.error(tex.getMessage());
+        } catch (final Exception ex) {
+
+            LOGGER.error("Exception caught while reading build for test plan [ {} ]!", plan, ex);
         }
 
         // there was some error, return null
@@ -419,8 +479,22 @@ public final class TestLinkHandlerImpl implements TestLinkCitrusHandler, TestLin
         try {
 
             // use this API call as there is only need for a test plan ID and it is possible to expand
+
+            // public TestCase[] getTestCasesForTestPlan(
+            // Integer testPlanId,
+            // List<Integer> testCasesIds,
+            // Integer buildId,
+            // List<Integer> keywordsIds,
+            // String keywords, // , separated e.g.: database,performance
+            // Boolean executed,
+            // List<Integer> assignedTo,
+            // String executeStatus, // , separated e.g.: p,n,f
+            // ExecutionType executionType,
+            // Boolean getStepInfo,
+            // TestCaseDetails detail) throws TestLinkAPIException {
+
             final TestCase[] cases = api.getTestCasesForTestPlan(planId, null, null, null, null,
-                    null, null, null, null, Boolean.TRUE);
+                    null, null, null, null, Boolean.TRUE, null);
 
             // make sure there are some TestLink test case(s)
             if ((null != cases) && (cases.length > 0)) {
@@ -428,6 +502,9 @@ public final class TestLinkHandlerImpl implements TestLinkCitrusHandler, TestLin
                 // return TestLink test case(s)
                 return cases;
             }
+        } catch (final TestLinkAPIException tex) {
+
+            LOGGER.error(tex.getMessage());
         } catch (final Exception ex) {
 
             LOGGER.error("Exception caught while reading test case(s) for test plan ID [ {} ]!",
@@ -462,10 +539,19 @@ public final class TestLinkHandlerImpl implements TestLinkCitrusHandler, TestLin
                 // add all platform(s) to the result list
                 for (final Platform platform : platforms) {
 
-                    // add name of platform
-                    bean.addPlatform(platform.getName());
+                    final String name = platform.getName().trim();
+
+                    // make sure there is some platform name
+                    if ((null != name) && (!name.isEmpty())) {
+
+                        // add name of platform
+                        bean.addPlatform(name);
+                    }
                 }
             }
+        } catch (final TestLinkAPIException tex) {
+
+            LOGGER.error(tex.getMessage());
         } catch (final Exception ex) {
 
             LOGGER.error("Exception caught while reading platform(s) for test plan ID [ {} ]!",
@@ -492,12 +578,12 @@ public final class TestLinkHandlerImpl implements TestLinkCitrusHandler, TestLin
             // build request parameters
             final Map<String, Object> executionData = new HashMap<String, Object>();
 
-            executionData.put(TestLinkParams.testCaseId.toString(), bean.getTestCaseId());
-            executionData.put(TestLinkParams.testCaseExternalId.toString(), null);
-            executionData.put(TestLinkParams.version.toString(), bean.getTestCaseVersion());
+            executionData.put(TestLinkParams.TEST_CASE_ID.toString(), bean.getTestCaseId());
+            executionData.put(TestLinkParams.TEST_CASE_EXTERNAL_ID.toString(), null);
+            executionData.put(TestLinkParams.VERSION.toString(), bean.getTestCaseVersion());
 
             // execute call to TestLink
-            final Object response = api.executeXmlRpcCall(TestLinkMethods.getTestCase.toString(),
+            final Object response = api.executeXmlRpcCall(TestLinkMethods.GET_TEST_CASE.toString(),
                     executionData);
 
             // make sure there is some response
@@ -527,9 +613,13 @@ public final class TestLinkHandlerImpl implements TestLinkCitrusHandler, TestLin
                     LOGGER.warn("TestLink response for external ID was [ {} ]", response);
                 }
             }
+        } catch (final TestLinkAPIException tex) {
+
+            LOGGER.error(tex.getMessage());
         } catch (final XmlRpcException xmlrpcex) {
 
             LOGGER.error("Error getting external ID", xmlrpcex);
         }
     }
+
 }

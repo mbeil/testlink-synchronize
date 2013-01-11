@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,7 +33,6 @@ import java.util.Map.Entry;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +45,7 @@ import de.eimb.testlink.synchronize.citrus.utils.FileUtils;
 /**
  * Implementation of writing / reading a CITRUS test case result into / from a file, using JSON. Use
  * the JSON implementation of CITRUS.
- *
+ * 
  * @author Matthias Beil
  * @since TestLink-Synchronize 1.0.0
  */
@@ -112,6 +110,7 @@ public class CitrusTestLinkFileHandlerImpl implements CitrusTestLinkFileHandler 
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<CitrusTestLinkFileBean> readFromDirectory(final String directory) {
 
         final List<CitrusTestLinkFileBean> result = new ArrayList<CitrusTestLinkFileBean>();
@@ -145,6 +144,7 @@ public class CitrusTestLinkFileHandlerImpl implements CitrusTestLinkFileHandler 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void writeToFile(final CitrusTestLinkBean bean, final String directory) {
 
         // make sure bean is valid, directory is tested later
@@ -180,10 +180,10 @@ public class CitrusTestLinkFileHandlerImpl implements CitrusTestLinkFileHandler 
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @param file
      *            DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     private String readJsonFromFile(final File file) {
@@ -214,12 +214,12 @@ public class CitrusTestLinkFileHandlerImpl implements CitrusTestLinkFileHandler 
 
     /**
      * Write the created JSON string to the given file.
-     *
+     * 
      * @param file
      *            File to write JSON string too.
      * @param json
      *            JSON string to write.
-     *
+     * 
      * @throws IOException
      *             Thrown in case of some IO error.
      */
@@ -243,14 +243,14 @@ public class CitrusTestLinkFileHandlerImpl implements CitrusTestLinkFileHandler 
 
     /**
      * Build from the values in the CITRUS bean and the given directory the new file.
-     *
+     * 
      * @param bean
      *            Bean holding information to build the filename.
      * @param directory
      *            Directory where to store the file.
-     *
+     * 
      * @return Newly created file for this test case.
-     *
+     * 
      * @throws IOException
      *             Thrown in case the file already exists-
      */
@@ -286,10 +286,10 @@ public class CitrusTestLinkFileHandlerImpl implements CitrusTestLinkFileHandler 
 
     /**
      * Convert bean content to a JSON string.
-     *
+     * 
      * @param bean
      *            Bean holding all data to be stored in the JSON string.
-     *
+     * 
      * @return String holding the bean content as a JSON string.
      */
     private String testToJson(final CitrusTestLinkBean bean) {
@@ -314,10 +314,10 @@ public class CitrusTestLinkFileHandlerImpl implements CitrusTestLinkFileHandler 
 
     /**
      * Convert JSON string back to a CITRUS test case element.
-     *
+     * 
      * @param json
      *            JSON string.
-     *
+     * 
      * @return Newly created CITRUS test case element.
      */
     private CitrusTestLinkBean jsonToTest(final String json) {

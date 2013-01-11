@@ -115,6 +115,7 @@ public class CitrusTestLinkListener implements TestListener {
      * reporting life cycle.
      * </p>
      */
+    @Override
     public void onTestStart(final TestCase citrusCase) {
 
         try {
@@ -158,6 +159,7 @@ public class CitrusTestLinkListener implements TestListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onTestSuccess(final TestCase citrusCase) {
 
         this.handleState(citrusCase, Boolean.TRUE, null, "success");
@@ -166,6 +168,7 @@ public class CitrusTestLinkListener implements TestListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onTestFailure(final TestCase citrusCase, final Throwable cause) {
 
         this.handleState(citrusCase, Boolean.FALSE, cause, "failure");
@@ -174,6 +177,7 @@ public class CitrusTestLinkListener implements TestListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onTestSkipped(final TestCase citrusCase) {
 
         this.handleState(citrusCase, null, null, "skipping");
@@ -182,6 +186,7 @@ public class CitrusTestLinkListener implements TestListener {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void onTestFinish(final TestCase citrusCase) {
 
         CitrusTestLinkBean bean = null;

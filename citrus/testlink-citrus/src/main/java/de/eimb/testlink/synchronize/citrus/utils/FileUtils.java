@@ -23,16 +23,14 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Utility class for CITRUS file static methods.
- *
+ * 
  * @author Matthias Beil
  * @since TestLink-Synchronize 1.0.0
  */
@@ -64,12 +62,12 @@ public abstract class FileUtils {
     /**
      * Delete file or directory. If directory has some files, those files are deleted as well, before
      * the directory is deleted.
-     *
+     * 
      * @param file
      *            File or directory to delete.
-     *
+     * 
      * @return {@code True} if the file could be deleted otherwise {@code false}.
-     *
+     * 
      * @see {@link File#delete()}
      */
     public static final boolean delete(final File file) {
@@ -114,12 +112,12 @@ public abstract class FileUtils {
 
     /**
      * Read all files from the given directory folder.
-     *
+     * 
      * @param folder
      *            Directory folder where to read files from.
      * @param fileNameRegEx
      *            If given the file name of a file must match this regular expression.
-     *
+     * 
      * @return List of files found in the given folder. In case there are some error, no files found
      *         the list might be {@code empty} but never {@code null}.
      */
@@ -138,6 +136,7 @@ public abstract class FileUtils {
 
             filter = new FilenameFilter() {
 
+                @Override
                 public boolean accept(final File dir, final String name) {
 
                     if ((null != name) && (!name.isEmpty())) {
@@ -167,12 +166,12 @@ public abstract class FileUtils {
      * Handle the creation / existence of a directory. If this directory does not exist, create this
      * directory. Validate that the directory name is not null and not empty, check if the directory
      * exists, that it is a directory and that it is writable.
-     *
+     * 
      * @param directory
      *            Name of directory.
-     *
+     * 
      * @return Newly created file folder.
-     *
+     * 
      * @throws IOException
      *             Thrown in case that directory name is invalid, that directory could not be created,
      *             that directory is not of type directory or directory is not writable.
@@ -214,12 +213,12 @@ public abstract class FileUtils {
     /**
      * Check if directory is readable. Validate that the directory name is not null and not empty,
      * check if the directory exists, that it is a directory and that it is readable.
-     *
+     * 
      * @param directory
      *            Name of directory.
-     *
+     * 
      * @return Newly readable directory file folder.
-     *
+     * 
      * @throws IOException
      *             Thrown in case that directory name is invalid, that directory does not exist, that
      *             directory is not of type directory or directory is not writable.
@@ -256,10 +255,10 @@ public abstract class FileUtils {
     /**
      * Convert date value to a string, using the format {@value #DATE_FORMAT}. This string is made up
      * in such a way that it could be used as part of a filename.
-     *
+     * 
      * @param date
      *            Date to be converted.
-     *
+     * 
      * @return Date converted to a string.
      */
     public static final String dateAsString(final Date date) {
@@ -278,10 +277,10 @@ public abstract class FileUtils {
 
     /**
      * Verify if file given by this file name exists, is a file, can be read and has some content.
-     *
+     * 
      * @param fileName
      *            Name of file.
-     *
+     * 
      * @return {@code True} if file name is not empty, file exists, is a file, can be read and has a
      *         length greater zero.
      */
@@ -300,10 +299,10 @@ public abstract class FileUtils {
 
     /**
      * Verify if file given by this file name exists, is a file, can be read and has some content.
-     *
+     * 
      * @param file
      *            Name of file.
-     *
+     * 
      * @return {@code True} if file name is not empty, file exists, is a file, can be read and has a
      *         length greater zero.
      */
@@ -315,10 +314,10 @@ public abstract class FileUtils {
 
     /**
      * Validates if folder is not null, exists and is a directory.
-     *
+     * 
      * @param folder
      *            File folder to validate.
-     *
+     * 
      * @return {@code True} if directory is valid otherwise {@code false}.
      */
     public static final boolean isValidDirectory(final File folder) {
@@ -328,10 +327,10 @@ public abstract class FileUtils {
 
     /**
      * Get the absolute file name of the file. Makes sure the file is valid.
-     *
+     * 
      * @param fileName
      *            File name to get the absolute path for.
-     *
+     * 
      * @return {@code Absolute path} for the given file or {@code null} if the file name is not valid
      *         or the file is not valid.
      */
@@ -350,7 +349,7 @@ public abstract class FileUtils {
 
     /**
      * Close any object of instance {@link Closeable}.
-     *
+     * 
      * @param obj
      *            Instance of closeable.
      */

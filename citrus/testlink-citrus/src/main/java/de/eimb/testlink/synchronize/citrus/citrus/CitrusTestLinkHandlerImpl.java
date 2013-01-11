@@ -32,7 +32,7 @@ import de.eimb.testlink.synchronize.citrus.utils.ConvertUtils;
 
 /**
  * Implement handling of CITRUS to TestLink functionality.
- *
+ * 
  * @author Matthias Beil
  * @since TestLink-Synchronize 1.0.0
  */
@@ -56,7 +56,7 @@ public final class CitrusTestLinkHandlerImpl implements CitrusTestLinkHandler {
 
     /**
      * Constructor for {@code CitrusTestlinkHandlerImpl} class.
-     *
+     * 
      * @param handlerIn
      *            Allows to set the handler. May be used for testing purposes.
      */
@@ -72,6 +72,7 @@ public final class CitrusTestLinkHandlerImpl implements CitrusTestLinkHandler {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void prepareWriteToTestLink(final CitrusTestLinkBean bean) {
 
         // fill bean with all available values
@@ -88,6 +89,7 @@ public final class CitrusTestLinkHandlerImpl implements CitrusTestLinkHandler {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void writeToTestLink(final CitrusTestLinkBean bean) {
 
         try {
@@ -104,7 +106,7 @@ public final class CitrusTestLinkHandlerImpl implements CitrusTestLinkHandler {
 
     /**
      * Handle all missing variables.
-     *
+     * 
      * @param bean
      *            Bean holding all needed variables.
      */
@@ -146,14 +148,14 @@ public final class CitrusTestLinkHandlerImpl implements CitrusTestLinkHandler {
 
     /**
      * Handle conversion of string. Additionally check if string is mandatory.
-     *
+     * 
      * @param bean
      *            CITRUS TestLink bean for setting value.
      * @param entry
      *            Entry element holding the CITRUS test case value.
      * @param tenum
      *            Enumeration holding key and mandatory flag.
-     *
+     * 
      * @return Converted object as string, which might be {@code null}.
      */
     private String handleString(final CitrusTestLinkBean bean, final Entry<String, Object> entry,
@@ -178,14 +180,14 @@ public final class CitrusTestLinkHandlerImpl implements CitrusTestLinkHandler {
 
     /**
      * Handle conversion of integer. Additionally check if integer is mandatory.
-     *
+     * 
      * @param bean
      *            CITRUS TestLink bean for setting value.
      * @param entry
      *            Entry element holding the CITRUS test case value.
      * @param tenum
      *            Enumeration holding key and mandatory flag.
-     *
+     * 
      * @return Converted object as integer, which might be {@code null}.
      */
     private Integer handleInteger(final CitrusTestLinkBean bean, final Entry<String, Object> entry,

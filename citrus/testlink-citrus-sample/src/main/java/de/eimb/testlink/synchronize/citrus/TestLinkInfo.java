@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import br.eti.kinoshita.testlinkjavaapi.TestLinkAPI;
+import br.eti.kinoshita.testlinkjavaapi.constants.TestCaseDetails;
 import br.eti.kinoshita.testlinkjavaapi.model.Build;
 import br.eti.kinoshita.testlinkjavaapi.model.TestCase;
 import br.eti.kinoshita.testlinkjavaapi.model.TestPlan;
@@ -313,7 +314,8 @@ public final class TestLinkInfo {
 
         try {
 
-            final TestCase[] cases = api.getTestCasesForTestSuite(testSuiteId, Boolean.TRUE, "full");
+            final TestCase[] cases = api.getTestCasesForTestSuite(testSuiteId, Boolean.TRUE,
+                    TestCaseDetails.FULL);
 
             if ((null != cases) && (cases.length > 0)) {
 
